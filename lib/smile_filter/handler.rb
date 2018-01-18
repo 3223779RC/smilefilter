@@ -1,0 +1,76 @@
+# frozen_string_literal: true
+
+require 'zlib'
+
+module SmileFilter
+  module Handler
+    CONTENT_LENGTH   = 'content-length'
+    CONTENT_ENCODING = 'content-encoding'
+    LOG_TYPE         = 'json'
+    
+    class << self
+      def make
+        ->(req, res) { handle(req, res) }
+      end
+      
+      private
+      
+      def handle(req, res)
+        return unless Config.host_limitted || comment_server?(req)
+        puts connection_info(req, res) # if $DEBUG
+        extract_gzip(res) if res[CONTENT_ENCODING] == 'gzip'
+        save_log(res.body, :raw) unless Config.max_log_count.zero?
+        res.body = Filter.exec(res.body)
+        save_log(res.body) unless Config.max_log_count.zero?
+        res.header.delete(CONTENT_ENCODING)
+        res.header.delete(CONTENT_LENGTH)
+      end
+      
+      def connection_info(req, res)
+        sprintf("%s %s Bytes\n%s%s %s %s %s",
+                Time.now,
+                res.content_length,
+                req.host,
+                req.path,
+                res.content_type,
+                res.body.encoding,
+                res[CONTENT_ENCODING])
+      end
+      
+      def comment_server?(req)
+        req.host == Config.comment_server[:Host] &&
+        req.path == Config.comment_server[:Path]
+      end
+      
+      def extract_gzip(res)
+        ascii_8bit_str = Zlib::GzipReader.wrap(StringIO.new(res.body)).read
+        res.body = ascii_8bit_str.force_encoding(Encoding::UTF_8)
+      end
+      
+      def compress_with_gzip(res)
+        Zlib::GzipWriter.wrap(io = StringIO.new) { |g|
+          g.write(res.body)
+          res.body = io.string
+        }
+      end
+      
+      def save_log(str, suffix = nil)
+        Dir.mkdir(Config::Path::LOG) unless Dir.exist?(Config::Path::LOG)
+        remove_excess_logs unless Config.max_log_count == -1
+        file_name = sprintf('%s/%s%s.%s',
+                            Config::Path::LOG,
+                            Time.now.strftime('%F-%T-%L').tr(':', '-'),
+                            suffix,
+                            LOG_TYPE)
+        File.write(file_name, str)
+      end
+      
+      def remove_excess_logs
+        log_files = Dir.glob(sprintf('%s/*.%s', Config::Path::LOG, LOG_TYPE))
+        excess_count = log_files.size - Config.max_log_count
+        return if excess_count.negative?
+        log_files.sort[0..excess_count].each { |f| File.delete(f) }
+      end
+    end
+  end
+end

@@ -1,0 +1,21 @@
+---
+# It improves the performance to set the value to true if you use some
+#   softwares to switch proxy.
+HostLimitted: true
+
+# Master comments can be edited if and only if this is true.
+EditMasterComment: true
+
+# Sup of saved json files containing comments information.
+# If this constant is -1, then they are saved infinitely.
+MaxLogCount: -1
+
+ProxyServer:
+  BindAddress: 127.0.0.1
+  Port: 8080
+  # If you use another proxry then set the URI.
+  # ProxyURI: http://example.com:80/
+
+CommentServer:
+  Host: 'nmsg.nicovideo.jp'
+  Path: '/api.json/'
