@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 require 'zlib'
+require 'smile_filter/filter'
 
 module SmileFilter
   module Handler
-    CONTENT_LENGTH   = 'content-length'
-    CONTENT_ENCODING = 'content-encoding'
-    LOG_TYPE         = 'json'
+    CONTENT_LENGTH    = 'content-length'
+    CONTENT_ENCODING  = 'content-encoding'
+    LOG_TYPE          = 'json'
     
     class << self
       def make
@@ -17,7 +18,7 @@ module SmileFilter
       
       def handle(req, res)
         return unless Config.host_limitted || comment_server?(req)
-        puts connection_info(req, res) # if $DEBUG
+        puts connection_info(req, res)
         extract_gzip(res) if res[CONTENT_ENCODING] == 'gzip'
         save_log(res.body, :raw) unless Config.max_log_count.zero?
         res.body = Filter.exec(res.body)
@@ -27,19 +28,17 @@ module SmileFilter
       end
       
       def connection_info(req, res)
-        sprintf("%s %s Bytes\n%s%s %s %s %s",
+        sprintf("\n%s %s Bytes\n%s %s %s %s",
                 Time.now,
                 res.content_length,
-                req.host,
-                req.path,
+                req.unparsed_uri ,
                 res.content_type,
                 res.body.encoding,
                 res[CONTENT_ENCODING])
       end
       
       def comment_server?(req)
-        req.host == Config.comment_server[:Host] &&
-        req.path == Config.comment_server[:Path]
+        req.host == Config.comment_server[:Host]
       end
       
       def extract_gzip(res)

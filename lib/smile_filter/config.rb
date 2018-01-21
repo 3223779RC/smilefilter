@@ -4,8 +4,6 @@ require 'yaml'
 
 module SmileFilter
   module Config
-    VERSION = '1.0.0'
-    
     class << self
       def load(path)
         @config ||= symbolize(YAML.load_file(path)).freeze

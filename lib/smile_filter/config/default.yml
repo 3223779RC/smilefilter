@@ -1,21 +1,19 @@
 ---
-# It improves the performance to set the value to true if you use some
-#   softwares to switch proxy.
+# pacファイルや外部ツールでSmileFilterをニコニコ動画のコメント・サーバーにみ
+# 適用している場合は true にセットするとパフォーマンスがちょっと良くなる。
 HostLimitted: true
 
-# Master comments can be edited if and only if this is true.
+# 投稿者コメントをlist.txtの編集の対象にするかどうか。
 EditMasterComment: true
 
-# Sup of saved json files containing comments information.
-# If this constant is -1, then they are saved infinitely.
-MaxLogCount: -1
+# 保存するコメントのログの上限。負の値の時上限なし。
+MaxLogCount: 0
 
 ProxyServer:
   BindAddress: 127.0.0.1
   Port: 8080
-  # If you use another proxry then set the URI.
+  # もし他のプロキシを使っているなら次の行の`#'を削除してアドレスを指定
   # ProxyURI: http://example.com:80/
 
 CommentServer:
   Host: 'nmsg.nicovideo.jp'
-  Path: '/api.json/'

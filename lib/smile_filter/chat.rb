@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'smile_filter/commands'
+
 module SmileFilter
   class Chat
     OPTIONS = %i[

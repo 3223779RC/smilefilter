@@ -1,1 +1,1 @@
-SAVE THIS FILE AS `UTF-8'
+このファイルは必ず`UTF-8'で保存してください

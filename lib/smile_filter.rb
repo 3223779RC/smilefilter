@@ -5,26 +5,16 @@ $LOAD_PATH << File.dirname(File.expand_path(__FILE__))
 require 'uri'
 require 'webrick'
 require 'webrick/httpproxy'
-
 require 'smile_filter/backward_compatibility.rb' if RUBY_VERSION < '2.4.0'
-
+require 'smile_filter/version'
 require 'smile_filter/config'
 require 'smile_filter/config/initializer'
 require 'smile_filter/config/path'
 require 'smile_filter/handler'
-require 'smile_filter/commands'
-require 'smile_filter/filter_commands/cmd'
-require 'smile_filter/filter_commands/cmt'
-require 'smile_filter/filter_commands/dbg'
-require 'smile_filter/filter_commands/reg'
-require 'smile_filter/filter_commands/uid'
-require 'smile_filter/filter_file_parser'
-require 'smile_filter/comment_data'
-require 'smile_filter/filter'
-require 'smile_filter/chat'
 
 module SmileFilter
   PAC_MIME_TYPE = {'pac' => 'application/x-ns-proxy-autoconfig'}
+  UserFilter    = Module.new
   
   class << self
     def start
@@ -33,7 +23,7 @@ module SmileFilter
       srv = WEBrick::HTTPProxyServer.new(server_config)
       trap_signal(srv)
       begin
-        puts Time.now, 'Hello!'
+        puts '', Time.now, "Hello, SmileFilter #{VERSION}!"
         srv.start
       ensure
         srv.shutdown

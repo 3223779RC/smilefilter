@@ -1,5 +1,12 @@
 # frozen_string_literal: true
 
+require 'smile_filter/error_handler'
+require 'smile_filter/filter_commands/cmd'
+require 'smile_filter/filter_commands/cmt'
+require 'smile_filter/filter_commands/dbg'
+require 'smile_filter/filter_commands/reg'
+require 'smile_filter/filter_commands/uid'
+
 module SmileFilter
   module FilterFileParser
     COMMANDS    = %w[cmd cmt uid reg dbg]
@@ -16,7 +23,7 @@ module SmileFilter
       mtime = File::Stat.new(Config::Path::USER_FILTER).mtime
       if @@user_filter_mtime != mtime
         @@user_filter_mtime = mtime
-        load(Config::Path::USER_FILTER)
+        ErrorHandler.catch_filter_error { load(Config::Path::USER_FILTER) }
       end
     end
     
@@ -32,7 +39,8 @@ module SmileFilter
     def parse(path)
       File.read(path, encoding: Encoding::UTF_8).scan(COMMAND_REG)
         .each_with_object([]) do |(cmd, expr), ary|
-          next unless COMMANDS.include?(cmd)
+          next if !COMMANDS.include?(cmd) ||
+                  ErrorHandler.list_raising_error?(cmd, expr)
           ary << SmileFilter.const_get(cmd.capitalize).new(expr.chomp)
         end
     end
