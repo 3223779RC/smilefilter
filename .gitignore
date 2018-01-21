@@ -1,1 +1,4 @@
-public_html/
+/public_html
+/template.rb
+/exe_converter.rb
+*.[0-9]~
