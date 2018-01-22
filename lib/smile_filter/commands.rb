@@ -26,7 +26,6 @@ module SmileFilter
     
     def initialize(str)
       COMMANDS.each { |cmd| instance_variable_set(add_at_sign(cmd), nil) }
-      @others = []
       parse_commands(str)
     end
     
@@ -37,17 +36,16 @@ module SmileFilter
     def to_a
       COMMANDS.each_with_object([]) do |sym, ary|
         value = instance_variable_get(add_at_sign(sym))
-        ary << to_command_name(sym, value) if value && value != []
+        ary << to_command_name(sym, value) if value
       end
     end
     
     def empty?
-      instance_variables == [:@others] && @others.empty?
+      instance_variables.none? { |v| instance_variable_get(v) }
     end
     
     def clear
       instance_variables.each { |sym| remove_instance_variable(sym) }
-      @others = []
     end
     
     alias delete clear
@@ -61,7 +59,7 @@ module SmileFilter
         var_name = to_var_name(cmd)
         value = command_value(cmd)
         if var_name == :@others
-          @others << value
+          add_to_others(value)
         else
           instance_variable_set(var_name, value)
         end
@@ -74,11 +72,15 @@ module SmileFilter
     
     private
     
+    def add_to_others(value)
+      @others ? @others << value : @others = [value]
+    end
+    
     def parse_commands(str)
       str.split.each do |cmd|
         var_name = to_var_name(cmd)
         if instance_variable_get(var_name)
-          @others << cmd
+          add_to_others(cmd)
         else
           instance_variable_set(var_name, command_value(cmd))
         end
