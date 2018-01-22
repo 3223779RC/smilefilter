@@ -6,7 +6,7 @@ module SmileFilter
   class Chat
     OPTIONS = %i[
       thread fork no vpos leaf date date_usec score premium anonymity user_id
-      mail deleted content
+      nicoru mail deleted content
     ]
     AT_SIGNED_OPTIONS = OPTIONS.map { |sym| :"@#{sym}" }
     
