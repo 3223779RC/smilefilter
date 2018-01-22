@@ -21,7 +21,7 @@ module SmileFilter
         puts connection_info(req, res)
         extract_gzip(res) if res[CONTENT_ENCODING] == 'gzip'
         save_log(res.body, :raw) unless Config.max_log_count.zero?
-        res.body = Filter.exec(res.body)
+        res.body = Filter.exec(res)
         save_log(res.body) unless Config.max_log_count.zero?
         res.header.delete(CONTENT_ENCODING)
         res.header.delete(CONTENT_LENGTH)
