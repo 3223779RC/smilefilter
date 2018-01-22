@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-require 'smile_filter/comment_data'
+require 'smile_filter/comment_data_json'
 require 'smile_filter/chat'
 
 module SmileFilter
   module ErrorHandler
-    DUMMY_COMMENT_DATA = CommentData.new(<<-EOT)
-      [{"chat": {"thread": "1515668313","no": 1,"vpos": 28094,"leaf": 4,"date": 1515671696,"date_usec": 918021,"anonymity": 1,"user_id": "j9_7arWl2P-kB73lHn3ZFoC2fmw","mail": "184","content": "foo bar baz"}}]
+    DUMMY_COMMENT_DATA = CommentDataJSON.new(<<-EOT)
+      [{"chat": {"thread": "1","no": 1,"vpos": 28094,"leaf": 4,"date": 1500000000,"date_usec": 0,"anonymity": 1,"user_id": "ABCDEFG","nicoru": 10,"mail": "184","content": "foo bar baz"}}]
     EOT
     
     module_function
