@@ -22,10 +22,12 @@ module SmileFilter
 #    SECOND_REG = /\A@(\d+)\z/
     BOOLEAN_COMMANDS = COMMANDS - %i[position color size font device others]
     
+    COMMANDS.each { |var| instance_variable_set(:"@#{var}", nil) }
+    
     attr_accessor(*COMMANDS)
     
+    
     def initialize(str)
-      COMMANDS.each { |cmd| instance_variable_set(add_at_sign(cmd), nil) }
       parse_commands(str)
     end
     
