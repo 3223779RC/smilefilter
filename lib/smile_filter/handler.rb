@@ -20,9 +20,9 @@ module SmileFilter
         return unless Config.host_limitted || comment_server?(req)
         puts connection_info(req, res)
         extract_gzip(res) if res[CONTENT_ENCODING] == 'gzip'
-        save_log(res.body, :raw) unless Config.max_log_count.zero?
+        save_log(res, :raw) unless Config.max_log_count.zero?
         res.body = Filter.exec(res)
-        save_log(res.body) unless Config.max_log_count.zero?
+        save_log(res) unless Config.max_log_count.zero?
         res.header.delete(CONTENT_ENCODING)
         res.header.delete(CONTENT_LENGTH)
       end
@@ -53,7 +53,7 @@ module SmileFilter
         }
       end
       
-      def save_log(str, suffix = nil)
+      def save_log(res, suffix = nil)
         Dir.mkdir(Config::Path::LOG) unless Dir.exist?(Config::Path::LOG)
         remove_excess_logs unless Config.max_log_count == -1
         log_type = res.content_type['json'] ? 'json' : 'xml'
@@ -62,7 +62,7 @@ module SmileFilter
                             Time.now.strftime('%F-%T-%L').tr(':', '-'),
                             suffix,
                             log_type)
-        File.write(file_name, str)
+        File.write(file_name, res.body)
       end
       
       def remove_excess_logs
