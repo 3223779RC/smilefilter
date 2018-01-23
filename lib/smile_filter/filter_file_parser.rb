@@ -6,10 +6,11 @@ require 'smile_filter/filter_commands/cmt'
 require 'smile_filter/filter_commands/dbg'
 require 'smile_filter/filter_commands/reg'
 require 'smile_filter/filter_commands/uid'
+require 'smile_filter/filter_commands/evl'
 
 module SmileFilter
   module FilterFileParser
-    COMMANDS    = %w[cmd cmt uid reg dbg]
+    COMMANDS    = %w[cmd cmt uid reg dbg evl]
     COMMAND_REG = /^@(#{Regexp.union(COMMANDS)}) +(.*)$/
     
     module_function
