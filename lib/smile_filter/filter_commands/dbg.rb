@@ -17,7 +17,7 @@ module SmileFilter
       chat.content.concat(":#{str}") unless str.empty?
     end
     
-    # P: premium, O: onymous, D: deleted
+    # P: premium, O: onymous, D: deleted, positive integer: nicoru
     def show_nontrivial_parameters(chat)
       ppt = properties(chat)
       cmd = commands(chat).join(',')
@@ -39,12 +39,12 @@ module SmileFilter
         str.concat('D')
         chat.deleted = nil
       end
+      chat.nicoru ? str.concat(chat.nicoru.to_s) : str
       chat.score ? str.concat(chat.score.to_s) : str
     end
     
     def commands(chat)
       NON_TRIVIAL_COMMANDS.each_with_object([]) do |sym, ary|
-        next if sym == :others && chat.mail.others.empty?
         next unless value = chat.mail.instance_variable_get(:"@#{sym}")
         ary << (value == true ? sym : value)
       end
