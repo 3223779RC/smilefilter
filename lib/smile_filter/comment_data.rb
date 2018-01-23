@@ -12,15 +12,39 @@ module SmileFilter
     
     attr_reader :chats
     
-    def initialize(json)
-      @chats, @whole_data = parse_json(json)
+    def initialize(res)
+      @chats, @whole_data = parse(res)
+#      @chats, @whole_data = parse_json(res.body)
+#      @content_type = res.content_type
     end
+    
+    def to_document
+      case @content_type
+      when /json/ then to_json(space: ' ')
+      when /xml/  then to_xml
+      else
+        ''
+      end
+    end
+    
+    private
     
     def to_json(opt = {})
       @whole_data.map(&:to_h).to_json(opt)
     end
     
-    private
+    def to_xml
+      
+    end
+    
+    def parse
+      case @content_type
+      when /json/ then parse_json
+      when /xml/  then parse_xml
+      else
+        ''
+      end
+    end
     
     def parse_json(json)
       JSON.parse(json, symbolize_names: true)
