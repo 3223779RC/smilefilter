@@ -51,17 +51,17 @@ module SmileFilter
     alias delete clear
     
     def remove(*cmds)
-      cmds.each { |cmd| remove_instance_variable(to_var_name(cmd)) }
+      cmds.each { |cmd| remove_instance_variable(var_name(cmd)) }
     end
     
     def add(*cmds)
       cmds.each do |cmd|
-        var_name = to_var_name(cmd)
+        var = var_name(cmd)
         value = command_value(cmd)
-        if var_name == :@others
+        if var == :@others
           add_to_others(value)
         else
-          instance_variable_set(var_name, value)
+          instance_variable_set(var, value)
         end
       end
     end
@@ -78,17 +78,17 @@ module SmileFilter
     
     def parse_commands(str)
       str.split.each do |cmd|
-        var_name = to_var_name(cmd)
-        if instance_variable_get(var_name)
+        var = var_name(cmd)
+        if var == :@others || instance_variable_get(var)
           add_to_others(cmd)
         else
-          instance_variable_set(var_name, command_value(cmd))
+          instance_variable_set(var, command_value(cmd))
         end
       end
     end
     
     def command_value(cmd)
-      case cut_at_sign(to_var_name(cmd))
+      case remove_at_sign(var_name(cmd))
       when :position, :color, :size, :font then cmd.to_sym
       when :device then cmd.match(DEVICE_REG)[:suffix].to_sym
       when *COMMANDS then true
@@ -108,7 +108,7 @@ module SmileFilter
       end
     end
     
-    def to_var_name(cmd)
+    def var_name(cmd)
       cmd = cmd.to_sym if cmd.kind_of?(String)
       case cmd
       when :'184'             then :@anonymity
@@ -127,7 +127,7 @@ module SmileFilter
       :"@#{sym}"
     end
     
-    def cut_at_sign(sym)
+    def remove_at_sign(sym)
       sym[0] == '@' ? sym[1..-1].to_sym : sym
     end
   end
