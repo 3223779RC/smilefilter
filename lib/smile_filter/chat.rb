@@ -10,6 +10,8 @@ module SmileFilter
     ]
     AT_SIGNED_OPTIONS = OPTIONS.map { |sym| :"@#{sym}" }
     
+    AT_SIGNED_OPTIONS.each { |var| instance_variable_set(var, nil) }
+    
     attr_accessor(*OPTIONS)
     
     class << self
