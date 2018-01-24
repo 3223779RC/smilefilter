@@ -33,6 +33,10 @@ module SmileFilter
     
     def properties(chat)
       str = +''
+      if chat.invisible?
+        str.concat('I')
+        chat.mail.remove(:invisible)
+      end
       str.concat('O') unless chat.anonymous?
       str.concat('P') if chat.premium?
       if chat.deleted   == 1
