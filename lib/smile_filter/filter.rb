@@ -9,8 +9,10 @@ module SmileFilter
   class Filter
     def self.exec(res)
       comment_data = case res.content_type
-                     when /json/ then CommentDataJSON.new(res.body)
-                     when /xml/  then CommentDataXML.new(res.body)
+                     when /\bjson\b/ then CommentDataJSON.new(res.body)
+                     when /\bxml\b/  then CommentDataXML.new(res.body)
+                     else
+                       return res.body
                      end
       new(comment_data).exec.to_document
     end
