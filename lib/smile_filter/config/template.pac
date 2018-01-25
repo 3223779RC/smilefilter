@@ -1,5 +1,5 @@
 function FindProxyForURL(url, host) {
-  if (host ==  "%s") {
+  if (dnsDomainIs(host, “%s”)) {
     return "PROXY %s:%d";
   } else {
     return "DIRECT";

@@ -7,20 +7,13 @@ module SmileFilter
       
       class << self
         def document_root
-          root = ENV.key?('OCRA_EXECUTABLE') ? Path::EXE_ROOT : Path::ROOT
-          path = "#{root}/public_html"
+          path = "#{Path::ROOT}/public_html"
           Dir.mkdir(path) unless Dir.exist?(path)
           path
         end
         
-        def pac_file
-          root = ENV.key?('OCRA_EXECUTABLE') ? Path::EXE_ROOT : Path::ROOT
-          "#{root}/public_html/proxy.pac"
-        end
-        
         def user_directory
-          root = ENV.key?('OCRA_EXECUTABLE') ? Path::EXE_ROOT : Path::ROOT
-          ud = if Dir.exist?(path = "#{root}/smilefilter")
+          ud = if Dir.exist?(path = "#{Path::ROOT}/smilefilter")
                  path
                else
                  "#{Dir.home}/smilefilter"
