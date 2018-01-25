@@ -2,12 +2,10 @@
 
 require 'zlib'
 require 'smile_filter/filter'
-
 module SmileFilter
   module Handler
     CONTENT_LENGTH    = 'content-length'
     CONTENT_ENCODING  = 'content-encoding'
-    LOG_TYPE          = 'json'
     
     class << self
       def make
@@ -66,7 +64,7 @@ module SmileFilter
       end
       
       def remove_excess_logs
-        log_files = Dir.glob(sprintf('%s/*.%s', Config::Path::LOG, LOG_TYPE))
+        log_files = Dir.glob("#{Config::Path::LOG}/*.*")
         excess_count = log_files.size - Config.max_log_count
         return if excess_count.negative?
         log_files.sort[0..excess_count].each { |f| File.delete(f) }
