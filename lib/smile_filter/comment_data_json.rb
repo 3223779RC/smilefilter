@@ -16,8 +16,8 @@ module SmileFilter
       @chats, @whole_data = parse(json)
     end
     
-    def to_document(opt = {})
-      @whole_data.map(&:to_h).to_json(opt)
+    def to_document
+      @whole_data.map(&:to_h).to_json(space: ' ')
     end
     
     private
