@@ -38,7 +38,7 @@ module SmileFilter
     end
     
     def parse(path)
-      File.read(path, encoding: Encoding::UTF_8).scan(COMMAND_REG)
+      File.read(path, mode: 'r:BOM|UTF-8').scan(COMMAND_REG)
         .each_with_object([]) do |(cmd, expr), ary|
           next if !COMMANDS.include?(cmd) ||
                   ErrorHandler.list_raising_error?(cmd, expr)
