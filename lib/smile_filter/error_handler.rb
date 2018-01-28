@@ -29,7 +29,7 @@ module SmileFilter
     def error_message(ex, type, *args)
       bt = backtrace(ex, type, *args)
       fname = "#{type}.#{type == :list ? 'txt' : 'rb'}"
-      msg = "### %s raises an error ###\n%s\n%s\n"
+      msg = "### %s raised an error ###\n%s\n%s\n"
       sprintf(msg, fname, ex, bt.join("\n"))
     end
     
