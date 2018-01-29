@@ -6,7 +6,7 @@ require 'uri'
 require 'webrick'
 require 'webrick/httpproxy'
 require 'smile_filter/backward_compatibility' if RUBY_VERSION < '2.4.0'
-require 'smile_filter/sandbox' # if SmileFilter::Config[:secure_level] == 1
+require 'smile_filter/sandbox' SmileFilter::Config.security[:Level] == 1
 require 'smile_filter/version'
 require 'smile_filter/config'
 require 'smile_filter/config/initializer'
