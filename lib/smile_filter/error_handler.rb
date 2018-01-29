@@ -14,7 +14,7 @@ module SmileFilter
     def catch_filter_error
       yield
     rescue Exception => ex
-      print error_message(ex, :filter)
+      $strerr.print error_message(ex, :filter)
     end
     
     def list_raising_error?(cmd, expr)
@@ -22,7 +22,7 @@ module SmileFilter
       DUMMY_COMMENT_DATA.chats.each { |chat| command.exec(chat) }
       false
     rescue Exception => ex
-      print error_message(ex, :list, cmd, expr.chomp)
+      $stderr.print error_message(ex, :list, cmd, expr.chomp)
       true
     end
     
