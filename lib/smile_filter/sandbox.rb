@@ -20,8 +20,8 @@ module SmileFilter
       }.freeze
       
       def run
-        return yield unless Config.security[:Level] == 1
         Timeout.timeout(Config.security[:Timeout]) do
+          return yield unless Config.security[:Level] == 1
           trace_call.tap(&:enable).instance_eval do
             begin
               yield
