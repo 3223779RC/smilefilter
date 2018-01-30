@@ -3,11 +3,15 @@
 module SmileFilter
   class Evl
     def initialize(expr)
-      @arg = expr
+      @expr = expr
     end
     
     def exec(chat)
-      eval(@arg) if chat.content
+      eval(@expr) if chat.content
+    end
+    
+    def to_a
+      ['evl', @expr]
     end
   end
 end

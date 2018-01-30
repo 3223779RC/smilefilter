@@ -1,38 +1,46 @@
 # frozen_string_literal: true
 
-require "fileutils"
+require 'timeout'
+require 'fileutils'
+require 'smile_filter/config'
 
 module SmileFilter
   module Sandbox
     class << self
-      IO_ = File
-      BC = [File, IO_, Dir, FileTest, FileUtils, ObjectSpace]
-      BCC = BC + BC.map{|c| c.singleton_class}
-      BM = [:eval_, :system, :exec, :`, :spawn, :require, :load, :trap]
-      # ObjectSpace.each_object
+      BLACKLIST = {
+        :class => [
+                    File, IO, Dir, FileTest, FileUtils, ObjectSpace
+                  ].flat_map { |klass| [klass, klass.singleton_class] }.freeze,
+        Kernel => %i[system exec ` spawn require trap].freeze,
+        Module => %i[class_eval module_eval].freeze
+      }.freeze
+      WHITELIST = {
+        :class => [].freeze,
+        IO     => %i[set_encoding].freeze
+      }.freeze
       
-      def censor
-        trace_call.tap(&:enable).instance_eval do
-          yield
-          p [:censor, self]
-          disable
+      def run
+        return yield unless Config.security[:Level] == 1
+        Timeout.timeout(Config.security[:Timeout]) do
+          trace_call.tap(&:enable).instance_eval do
+            begin
+              yield
+            ensure
+              disable
+            end
+          end
         end
       end
       
-      def test
-        b = binding
-        censor do
-          print '>>'
-          while gets
-            begin
-              p eval $_, b
-            rescue SecurityError => ex
-              puts ex
-            rescue => ex
-              puts ex
-            ensure
-              print '>>'
-            end
+      def test(level, sec)
+        security = {Security: {Level: level, Timeout: sec}}
+        Config.instance_variable_set(:@config, security)
+        while (print '>>'; gets)
+          begin
+            return if $_.strip == 'exit'
+            eval("run { p(#{$_}) }")
+          rescue Exception => ex
+            puts ex
           end
         end
       end
@@ -42,7 +50,6 @@ module SmileFilter
       def trace_call
         tp = TracePoint.new(:call, :c_call) do |tp|
           next unless censored?(tp)
-          puts caller
           raise SecurityError, "not allowed method `#{inspect_method(tp)}'"
         end
         tp.singleton_class.class_eval { private :disable }
@@ -51,19 +58,27 @@ module SmileFilter
       
       def inspect_method(trace)
         klass = trace.defined_class
-        klass_name = klass.singleton_class? ? klass.to_s[/:\K\w+/] : klass
+        klass_re = /#<Class:\K[\w:]+/
+        klass_name = klass.singleton_class? ? klass.to_s[klass_re] : klass
         separator = klass.singleton_class? ? '.' : '#'
         "#{klass_name}#{separator}#{trace.method_id}"
       end
       
       def censored?(trace)
         klass = trace.defined_class
-        BCC.include?(klass) ||
-        klass == Kernel && [:banned_methods].include?(trace.method_id)
+        method = trace.method_id
+        !whitelist?(klass, method) && blacklist?(klass, method)
+      end
+      
+      def whitelist?(klass, method)
+        WHITELIST[:class].include?(klass) ||
+        WHITELIST[klass] && WHITELIST[klass].include?(method)
+      end
+      
+      def blacklist?(klass, method)
+        BLACKLIST[:class].include?(klass) ||
+        BLACKLIST[klass] && BLACKLIST[klass].include?(method)
       end
     end
   end
 end
-
-#ファイルテスト演算子の使用、ファイルの更新時刻比較
-#トップレベルへの Kernel.#load (第二引数を指定してラップすれば実行可能)

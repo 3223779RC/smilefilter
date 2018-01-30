@@ -47,5 +47,9 @@ module SmileFilter
         end
       end
     end
+    
+    Config.load(SmileFilter::Config::Path::USER_CONFIG)
+    Config::Initializer.set_up_pac_file
+    
   end
 end

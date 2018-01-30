@@ -3,6 +3,7 @@
 module SmileFilter
   class Reg
     def initialize(expr)
+      @expr = expr
       @reg, @word = parse(expr)
     end
     
@@ -14,6 +15,10 @@ module SmileFilter
     # expr: "reg" or "reg" => "word"
     def parse(expr)
       eval("[#{expr}]")
+    end
+    
+    def to_a
+      ['reg', @expr]
     end
   end
 end
