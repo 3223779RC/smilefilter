@@ -5,6 +5,7 @@ module SmileFilter
     ARROW  = '=>'
     
     def initialize(expr)
+      @expr = expr
       @args = expr.split(ARROW).map { |a| a.split.map(&:to_sym) }
     end
     
@@ -14,6 +15,10 @@ module SmileFilter
       return chat.clear if @args.size == 1
       chat.mail.remove(*@args.first)
       chat.mail.add(*@args.last)
+    end
+    
+    def to_a
+      ['cmd', @expr]
     end
   end
 end

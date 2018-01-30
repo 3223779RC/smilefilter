@@ -23,23 +23,25 @@ module SmileFilter
     end
     
     def exec
-      ErrorHandler.catch_filter_error { exec_user_filter }
-      exec_filter_list
+      exec_filter_rb
+      exec_list_txt
       @comment_data
     end
     
     private
     
-    def exec_user_filter
+    def exec_filter_rb
       return unless UserFilter.private_method_defined?(:exec)
-      UserFilter.exec(@comment_data.chats)
+      ErrorHandler.catch(:rb) { UserFilter.exec(@comment_data.chats) }
     end
     
-    def exec_filter_list
+    def exec_list_txt
       emc = Config.edit_master_comment
       @comment_data.chats.each do |chat|
         next unless emc || !chat.master?
-        @filters.each { |cmd| cmd.exec(chat) }
+        @filters.each { |cmd|
+          ErrorHandler.catch(:txt, *cmd) { cmd.exec(chat) }
+        }
       end
     end
   end

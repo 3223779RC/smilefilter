@@ -9,6 +9,13 @@ EditMasterComment: true
 # 保存するコメントのログの上限。負の値の時上限なし。
 MaxLogCount: 0
 
+# list.txt と filter.rb に対するセキュリティ・レベルを指定
+Security:
+  # 0 だと無制限。1 だとファイルの読み書きや外部コマンドの実行を制限
+  Level: 0
+  # list.txt と filter.rb にそれぞれ実行時間の制限を秒数で指定
+  Timeout: 0
+
 ProxyServer:
   BindAddress: 127.0.0.1
   Port: 8080
@@ -16,4 +23,4 @@ ProxyServer:
   # ProxyURI: http://example.com:80/
 
 CommentServer:
-  Host: 'nmsg.nicovideo.jp'
+  Host: nmsg.nicovideo.jp

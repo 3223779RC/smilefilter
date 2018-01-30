@@ -21,6 +21,10 @@ module SmileFilter
         @config[:MaxLogCount]
       end
       
+      def security
+        @config[:Security] || {}
+      end
+      
       def proxy_server
         @config[:ProxyServer]
       end

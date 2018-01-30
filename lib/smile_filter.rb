@@ -5,7 +5,7 @@ $LOAD_PATH << File.dirname(File.expand_path(__FILE__))
 require 'uri'
 require 'webrick'
 require 'webrick/httpproxy'
-require 'smile_filter/backward_compatibility.rb' if RUBY_VERSION < '2.4.0'
+require 'smile_filter/backward_compatibility' if RUBY_VERSION < '2.4.0'
 require 'smile_filter/version'
 require 'smile_filter/config'
 require 'smile_filter/config/initializer'
@@ -18,12 +18,11 @@ module SmileFilter
   
   class << self
     def start
-      Config.load(Config::Path::USER_CONFIG)
-      Config::Initializer.set_up_pac_file
+      puts "Hello, SmileFilter #{VERSION}!", Time.now
+      init_settings
       srv = WEBrick::HTTPProxyServer.new(server_config)
       trap_signal(srv)
       begin
-        puts '', Time.now, "Hello, SmileFilter #{VERSION}!"
         srv.start
       ensure
         srv.shutdown
@@ -31,6 +30,12 @@ module SmileFilter
     end
     
     private
+    
+    def init_settings
+      Config.load(Config::Path::USER_CONFIG)
+      Config::Initializer.set_up_pac_file
+      FilterFileParser.load_filters
+    end
     
     def trap_signal(server)
       %i[INT TERM].each { |s| Signal.trap(s) { server.shutdown } }

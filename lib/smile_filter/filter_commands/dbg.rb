@@ -5,6 +5,7 @@ module SmileFilter
     NON_TRIVIAL_COMMANDS = Commands::COMMANDS - 
                            %i[anonymity color size position]
     def initialize(expr)
+      @expr = expr
       @arg = expr.strip
     end
     
@@ -27,6 +28,10 @@ module SmileFilter
                     cmd.empty? ? '' : ':',
                     cmd)
       chat.content.concat(str)
+    end
+    
+    def to_a
+      ['dbg', @expr]
     end
     
     private

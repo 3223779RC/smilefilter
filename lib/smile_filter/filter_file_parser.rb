@@ -10,44 +10,45 @@ require 'smile_filter/filter_commands/evl'
 
 module SmileFilter
   module FilterFileParser
-    COMMANDS    = %w[cmd cmt uid reg dbg evl]
-    COMMAND_REG = /^@(#{Regexp.union(COMMANDS)}) +(.*)$/
-    
-    module_function
-    
-    def load_filters
-      load_user_filter
-      load_filter_list
-    end
-    
-    def load_user_filter
-      mtime = File::Stat.new(Config::Path::USER_FILTER).mtime
-      if @@user_filter_mtime != mtime
-        @@user_filter_mtime = mtime
-        ErrorHandler.catch_filter_error { load(Config::Path::USER_FILTER) }
+    class << self
+      COMMANDS    = %w[cmd cmt uid reg dbg evl]
+      COMMAND_REG = /^@(#{Regexp.union(COMMANDS)}) +(.*)$/
+      
+      def load_filters
+        load_filter_rb
+        load_list_txt
+        @@list_txt
       end
-    end
-    
-    def load_filter_list(init = false)
-      mtime = File::Stat.new(Config::Path::LIST_FILE).mtime
-      if init || mtime != @@filter_list_mtime
-        @@filter_list_mtime = mtime
-        @@filter_list = parse(Config::Path::LIST_FILE)
-      end
-      @@filter_list
-    end
-    
-    def parse(path)
-      File.read(path, encoding: Encoding::UTF_8).scan(COMMAND_REG)
-        .each_with_object([]) do |(cmd, expr), ary|
-          next if !COMMANDS.include?(cmd) ||
-                  ErrorHandler.list_raising_error?(cmd, expr)
-          ary << SmileFilter.const_get(cmd.capitalize).new(expr.chomp)
+      
+      private
+      
+      def load_list_txt
+        mtime = File::Stat.new(Config::Path::LIST_FILE).mtime
+        if !class_variable_defined?(:@@list_txt_mtime) ||
+           @@list_txt_mtime != mtime
+          @@list_txt_mtime = mtime
+          @@list_txt = parse(Config::Path::LIST_FILE)
         end
+      end
+      
+      def load_filter_rb
+        mtime = File::Stat.new(Config::Path::USER_FILTER).mtime
+        if !class_variable_defined?(:@@filter_rb_mtime) ||
+           @@filter_rb_mtime != mtime
+          @@filter_rb_mtime = mtime
+          ErrorHandler.catch(:rb) { load(Config::Path::USER_FILTER) }
+          ErrorHandler.raise?(:rb) if UserFilter.private_method_defined?(:exec)
+        end
+      end
+      
+      def parse(path)
+        #File.read(path, mode: 'r:BOM|UTF-8').scan(COMMAND_REG)
+        File.read(path, encoding: Encoding::UTF_8).scan(COMMAND_REG)
+          .each_with_object([]) do |(cmd, expr), ary|
+            next if ErrorHandler.raise?(:txt, cmd, expr)
+            ary << SmileFilter.const_get(cmd.capitalize).new(expr.chomp)
+          end
+      end
     end
-    
-    @@user_filter_mtime = nil
-    @@filter_list_mtime = nil
-    @@filter_list = load_filter_list(true)
   end
 end

@@ -54,7 +54,7 @@ module SmileFilter
       def save_log(res, suffix = nil)
         Dir.mkdir(Config::Path::LOG) unless Dir.exist?(Config::Path::LOG)
         remove_excess_logs unless Config.max_log_count == -1
-        log_type = res.content_type['json'] ? 'json' : 'xml'
+        log_type = res.content_type&.match?(/\bjson\b/) ? 'json' : 'xml'
         file_name = sprintf('%s/%s%s.%s',
                             Config::Path::LOG,
                             Time.now.strftime('%F-%T-%L').tr(':', '-'),
