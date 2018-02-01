@@ -42,8 +42,7 @@ module SmileFilter
       end
       
       def parse(path)
-        #File.read(path, mode: 'r:BOM|UTF-8').scan(COMMAND_REG)
-        File.read(path, encoding: Encoding::UTF_8).scan(COMMAND_REG)
+        File.read(path, mode: 'r:BOM|UTF-8').scan(COMMAND_REG)
           .each_with_object([]) do |(cmd, expr), ary|
             next if ErrorHandler.raise?(:txt, cmd, expr)
             ary << SmileFilter.const_get(cmd.capitalize).new(expr.chomp)
