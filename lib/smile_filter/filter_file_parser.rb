@@ -7,11 +7,12 @@ require 'smile_filter/filter_commands/dbg'
 require 'smile_filter/filter_commands/reg'
 require 'smile_filter/filter_commands/uid'
 require 'smile_filter/filter_commands/evl'
+require 'smile_filter/filter_commands/ign'
 
 module SmileFilter
   module FilterFileParser
     class << self
-      COMMANDS    = %w[cmd cmt uid reg dbg evl]
+      COMMANDS    = %w[cmd cmt uid reg dbg evl ign]
       COMMAND_REG = /^@(#{Regexp.union(COMMANDS)}) +(.*)$/
       
       def load_filters
