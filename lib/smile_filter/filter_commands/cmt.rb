@@ -10,6 +10,7 @@ module SmileFilter
     end
     
     def exec(chat)
+      return unless chat.content
       cmt = @@ignore.empty? ? chat.content : chat.content.delete(@@ignore)
       chat.clear if cmt.include?(@arg)
     end
