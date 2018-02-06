@@ -18,7 +18,8 @@ module SmileFilter
       chat.content.concat(":#{str}") unless str.empty?
     end
     
-    # P: premium, O: onymous, D: deleted, positive integer: nicoru
+    # I: invisible, P: premium, O: onymous, D: deleted,
+    # positive integer: nicoru, negative integer: NG score
     def show_nontrivial_parameters(chat)
       ppt = properties(chat)
       cmd = commands(chat).join(',')
