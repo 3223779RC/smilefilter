@@ -6,10 +6,11 @@ require 'smile_filter/sandbox'
 
 module SmileFilter
   module ErrorHandler
+    DUMMY_COMMENT_DATA = CommentDataJSON.new(<<-EOT)
+      [{"chat": {"thread": "1","no": 1,"vpos": 28094,"leaf": 4,"date": 1500000000,"date_usec": 0,"anonymity": 1,"user_id": "ABCDEFG","nicoru": 10,"mail": "184","content": "foo bar baz"}}]
+    EOT
+    
     class << self
-      DUMMY_COMMENT_DATA = CommentDataJSON.new(<<-EOT)
-        [{"chat": {"thread": "1","no": 1,"vpos": 28094,"leaf": 4,"date": 1500000000,"date_usec": 0,"anonymity": 1,"user_id": "ABCDEFG","nicoru": 10,"mail": "184","content": "foo bar baz"}}]
-      EOT
       
       def catch(type, *args, &block)
         Sandbox.run(&block)
