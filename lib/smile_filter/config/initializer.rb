@@ -3,7 +3,7 @@
 module SmileFilter
   module Config
     module Initializer
-      PAC_FILE_REG = /PROXY (?<bind_address>\d+\.\d+\.\d+\.\d):(?<port>\d+)/m
+      PAC_FILE_RE = /PROXY (?<bind_address>\d+\.\d+\.\d+\.\d):(?<port>\d+)/m
       
       class << self
         def document_root
@@ -35,7 +35,7 @@ module SmileFilter
         private
         
         def same_settings?(pac_path)
-          m = File.read(pac_path).match(PAC_FILE_REG)
+          m = File.read(pac_path).match(PAC_FILE_RE)
           Config.proxy_server[:BindAddress] == m[:bind_address] &&
           Config.proxy_server[:Port] == m[:port]
         end
