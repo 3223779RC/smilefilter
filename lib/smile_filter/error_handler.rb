@@ -47,7 +47,7 @@ module SmileFilter
       def message(ex, type, *args)
         bt = backtrace(ex, type, *args)
         fname = type == :txt ? 'list.txt' : 'filter.rb'
-        msg = "### %s raised an error ###\n%s: %s\n%s\n"
+        msg = "### %s raised an error ###\n%s: %s\n%s\n\n"
         sprintf(msg, fname, ex.class, ex.message, bt.join("\n"))
       end
       
