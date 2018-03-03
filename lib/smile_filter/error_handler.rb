@@ -20,8 +20,8 @@ module SmileFilter
       
       def raise?(type, *args)
         case type
-        when :txt then check_list_txt(*args)
-        when :rb  then check_filter_rb
+        when :txt then check_txt(*args)
+        when :rb  then check_rb
         end
         false
       rescue Exception => ex
@@ -38,15 +38,15 @@ module SmileFilter
         }
       end
       
-      def check_filter_rb
+      def check_rb
         Sandbox.run {
           UserFilter.exec(DUMMY_COMMENT_DATA.chats)
         }
       end
       
       def message(ex, type, *args)
+        fname = Config.filter_get(type)
         bt = backtrace(ex, type, *args)
-        fname = type == :txt ? 'list.txt' : 'filter.rb'
         msg = "### %s raised an error ###\n%s: %s\n%s\n\n"
         sprintf(msg, fname, ex.class, ex.message, bt.join("\n"))
       end
