@@ -18,7 +18,7 @@ module SmileFilter
       chat.content.concat(":#{str}") unless str.empty?
     end
     
-    # I: invisible, P: premium, O: onymous, D: deleted,
+    # F: owner, P: premium, I: invisible, O: onymous, D: deleted,
     # positive integer: nicoru, negative integer: NG score
     def show_nontrivial_parameters(chat)
       ppt = properties(chat)
@@ -39,12 +39,13 @@ module SmileFilter
     
     def properties(chat)
       str = +''
+      str.concat('F') if chat.owner?
+      str.concat('P') if chat.premium?
       if chat.invisible?
         str.concat('I')
         chat.mail.remove(:invisible)
       end
       str.concat('O') unless chat.anonymous?
-      str.concat('P') if chat.premium?
       if chat.deleted   == 1
         str.concat('D')
         chat.deleted = nil
