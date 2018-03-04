@@ -52,8 +52,8 @@ module SmileFilter
     
     alias delete clear
     
-    def remove(*cmds)
-      cmds.each { |cmd| remove_instance_variable(var_name(cmd)) }
+    def from_pc?
+      NON_PC_DEVICE.none? { |v| instance_variable_get(v) }
     end
     
     def add(*cmds)
@@ -61,21 +61,32 @@ module SmileFilter
         var = var_name(cmd)
         value = command_value(cmd)
         if var == :@others
-          add_to_others(value)
+          add_to_others(cmd)
         else
           instance_variable_set(var, value)
         end
       end
     end
     
-    def from_pc?
-      NON_PC_DEVICE.none? { |v| instance_variable_get(v) }
+    def remove(*cmds)
+      cmds.each do |cmd|
+        vname = var_name(cmd)
+        if vname == :@others
+          remove_from_others(cmd)
+        else
+          remove_instance_variable(vname)
+        end
+      end
     end
     
     private
     
     def add_to_others(value)
       @others ? @others << value : @others = [value]
+    end
+    
+    def remove_from_others(value)
+      @others ? @others.delete(value) : @others = []
     end
     
     def parse_commands(str)
