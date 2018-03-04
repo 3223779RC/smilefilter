@@ -6,7 +6,7 @@ module SmileFilter
   module Config
     class << self
       def load(path)
-        @config ||= symbolize(YAML.load_file(path)).freeze
+        @config ||= symbolize(YAML.load_file(path))
       end
       
       def host_limitted
@@ -22,7 +22,7 @@ module SmileFilter
       end
       
       def security
-        @config[:Security] || {}
+        @config[:Security]
       end
       
       def proxy_server
@@ -33,7 +33,37 @@ module SmileFilter
         @config[:CommentServer]
       end
       
+      def filter_file
+        @config[:FilterFile]
+      end
+      
+      def filter_get(mode)
+        filter_file[mode.upcase]
+      end
+      
+      def filter_set(mode, fname)
+        return if filter_get(mode) == fname
+        filter_file[mode.upcase] = fname
+        save_filter(mode)
+      end
+      
       private
+      
+      def save_filter(mode)
+        fname = filter_get(mode)
+        yaml = File.read(Path::USER_CONFIG, mode: 'r:BOM|UTF-8')
+        File.write(Path::USER_CONFIG,
+                   yaml.sub(filter_re(mode), "\\1#{fname}\\2"),
+                   mode: 'w:BOM|UTF-8')
+      end
+      
+      def filter_re(mode)
+        /
+          (^\ ++#{mode.upcase}:\ *+)
+          .*?[^\\](?:\\\\)*(?<!\ )
+          (\ *\#.*)?$
+        /x
+      end
       
       def symbolize(obj)
         case obj
