@@ -1,26 +1,31 @@
 ---
-# pacファイルや外部ツールでSmileFilterをニコニコ動画のコメント・サーバーにみ
-# 適用している場合は true にセットするとパフォーマンスがちょっと良くなる。
+# 起動時に適用するフィルターを拡張子毎に指定。
+FilterFile:
+  RB: filter.rb
+  TXT: filter.txt
+
+# txtファイルのフィルターで投稿者コメントを編集の対象にするかどうか。
+EditOwnerComment: true
+
+# pacファイルや外部ツールでSmileFilterをニコニコ動画のコメント・サーバーにのみ
+# 適用している場合は、 true にセットするとパフォーマンスがちょっと良くなる。
 HostLimitted: true
-
-# 投稿者コメントをlist.txtの編集の対象にするかどうか。
-EditMasterComment: true
-
-# 保存するコメントのログの上限。負の値の時上限なし。
-MaxLogCount: 0
-
-# list.txt と filter.rb に対するセキュリティ・レベルを指定
-Security:
-  # 0 だと無制限。1 だとファイルの読み書きや外部コマンドの実行を制限
-  Level: 0
-  # list.txt と filter.rb にそれぞれ実行時間の制限を秒数で指定
-  Timeout: 0
 
 ProxyServer:
   BindAddress: 127.0.0.1
   Port: 8080
   # もし他のプロキシを使っているなら次の行の`#'を削除してアドレスを指定
   # ProxyURI: http://example.com:80/
+
+# 保存するコメントのログの上限。負の値の時上限なし。
+MaxLogCount: 0
+
+# フィルターに対するセキュリティ・レベルを指定
+Security:
+  # 0 だと無制限。1 だとファイルの読み書きや外部コマンドの実行を制限。
+  Level: 0
+  # フィルターの実行時間の上限を秒数で指定。 0 なら無制限。
+  Timeout: 0
 
 CommentServer:
   Host: nmsg.nicovideo.jp
