@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'smile_filter/filter_file_parser'
+require 'smile_filter/filter_parser'
 require 'smile_filter/comment_data_xml'
 require 'smile_filter/comment_data_json'
 require 'smile_filter/error_handler'
@@ -36,9 +36,9 @@ module SmileFilter
     end
     
     def exec_list_txt
-      emc = Config.edit_master_comment
+      eoc = Config.edit_owner_comment
       @comment_data.chats.each do |chat|
-        next unless emc || !chat.master?
+        next unless eoc || !chat.owner?
         @filters.each { |cmd|
           ErrorHandler.catch(:txt, *cmd) { cmd.exec(chat) }
         }
