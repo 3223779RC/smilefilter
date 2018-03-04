@@ -18,6 +18,7 @@ module SmileFilter
             when 's'         then current_status
             when 't'         then switch_filter(:txt)
             when 'v'         then display_version
+            end
           end
         end
       end
