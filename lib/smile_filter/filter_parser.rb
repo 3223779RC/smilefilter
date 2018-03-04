@@ -16,7 +16,7 @@ module SmileFilter
     
     class << self
       def load_filters
-        @@mtimes ||= {}
+        @@last ||= {rb: {}, txt: {}}
         %i[rb txt].each { |mode| update_filter(mode) }
         @@txt_filter
       end
@@ -26,8 +26,8 @@ module SmileFilter
       def update_filter(mode)
         fpath = Config::Path.filter(mode)
         mtime = File::Stat.new(fpath).mtime
-        return if @@mtimes[fpath] == mtime
-        @@mtimes[fpath] = mtime
+        return if @@last[mode][:path] == fpath && @@last[mode][:mtime] == mtime
+        @@last[mode] = {path: fpath, mtime: mtime}
         load_filter(mode, fpath)
       end
       
@@ -35,6 +35,7 @@ module SmileFilter
         case mode
         when :txt then @@txt_filter = parse(fpath)
         when :rb
+          SmileFilter.class_eval { remove_const :UserFilter }
           ErrorHandler.catch(:rb) { load(Config::Path.filter(:rb)) }
           ErrorHandler.raise?(:rb) if UserFilter.private_method_defined?(:exec)
         end
