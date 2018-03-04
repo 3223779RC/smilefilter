@@ -10,7 +10,7 @@ require 'smile_filter/filter_commands/evl'
 require 'smile_filter/filter_commands/ign'
 
 module SmileFilter
-  module FilterFileParser
+  module FilterParser
     class << self
       COMMANDS    = %w[cmd cmt uid reg dbg evl ign]
       COMMAND_REG = /^@(#{Regexp.union(COMMANDS)}) +(.*)$/

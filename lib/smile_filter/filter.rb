@@ -18,24 +18,24 @@ module SmileFilter
     end
     
     def initialize(comment_data)
-      @filters = FilterFileParser.load_filters
+      @filters = FilterParser.load_filters
       @comment_data = comment_data
     end
     
     def exec
-      exec_filter_rb
-      exec_list_txt
+      exec_rb
+      exec_txt
       @comment_data
     end
     
     private
     
-    def exec_filter_rb
+    def exec_rb
       return unless UserFilter.private_method_defined?(:exec)
       ErrorHandler.catch(:rb) { UserFilter.exec(@comment_data.chats) }
     end
     
-    def exec_list_txt
+    def exec_txt
       eoc = Config.edit_owner_comment
       @comment_data.chats.each do |chat|
         next unless eoc || !chat.owner?
