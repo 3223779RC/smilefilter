@@ -60,7 +60,7 @@ module SmileFilter
     
     alias delete clear
     
-    def master?
+    def owner?
       @fork == 1
     end
     

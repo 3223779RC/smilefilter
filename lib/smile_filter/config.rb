@@ -13,8 +13,8 @@ module SmileFilter
         @config[:HostLimitted]
       end
       
-      def edit_master_comment
-        @config[:EditMasterComment]
+      def edit_owner_comment
+        @config[:EditOwnerComment]
       end
       
       def max_log_count
@@ -51,10 +51,10 @@ module SmileFilter
       
       def save_filter(mode)
         fname = filter_get(mode)
-        yaml = File.read(Path::USER_CONFIG, mode: 'r:BOM|UTF-8')
+        yaml = File.read(Path::USER_CONFIG, mode: 'rb+:BOM|UTF-8')
         File.write(Path::USER_CONFIG,
                    yaml.sub(filter_re(mode), "\\1#{fname}\\2"),
-                   mode: 'w:BOM|UTF-8')
+                   mode: 'wb+:BOM|UTF-8')
       end
       
       def filter_re(mode)
