@@ -18,10 +18,6 @@ module SmileFilter
             when 's'         then current_status
             when 't'         then switch_filter(:txt)
             when 'v'         then display_version
-            when 'd'         then (require "pry"; pry) ### debug
-            else
-              p$_ ### debug
-            end
           end
         end
       end
