@@ -34,6 +34,7 @@ module SmileFilter
         srv.start
       ensure
         srv.shutdown
+        puts 'Goodbye!'
       end
     end
     
