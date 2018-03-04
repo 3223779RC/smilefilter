@@ -3,8 +3,8 @@
 #  UserFilter.#exec が定義されると、rbファイルのフィルターが
 #  txtファイルのフィルターに先立って処理されるようになります。
 #  例として、これより下の行の`#'を削除すると、
-#  一度でもbigかつshitaでコメントしたユーザーの全てのコメントを
-#  smallかつblackかつnakaに変更します。
+#  一度でもshitaかつbigでコメントしたユーザーの全てのコメントを
+#  nakaかつblackかつsmallに変更します。
 
 module SmileFilter
   module UserFilter
@@ -18,9 +18,9 @@ module SmileFilter
   #   black_list.uniq!
   #   chats.each do |chat|
   #     next unless black_list.include?(chat.user_id)
-  #     chat.site = :small
-  #     chat.color = :black
   #     chat.position = :naka
+  #     chat.color = :black
+  #     chat.site = :small
   #   end
   # end
   end
