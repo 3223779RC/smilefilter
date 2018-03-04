@@ -41,7 +41,7 @@ module SmileFilter
     def init_settings
       Config.load(Config::Path::USER_CONFIG)
       Config::Initializer.set_up_pac_file
-      FilterFileParser.load_filters
+      FilterParser.load_filters
     end
     
     def trap_signal(server)
