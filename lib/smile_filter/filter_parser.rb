@@ -11,39 +11,37 @@ require 'smile_filter/filter_commands/ign'
 
 module SmileFilter
   module FilterParser
+    COMMANDS   = %w[cmd cmt uid reg dbg evl ign]
+    COMMAND_RE = /^@(#{Regexp.union(COMMANDS)}) +(.*)$/
+    
     class << self
-      COMMANDS    = %w[cmd cmt uid reg dbg evl ign]
-      COMMAND_REG = /^@(#{Regexp.union(COMMANDS)}) +(.*)$/
-      
       def load_filters
-        load_rb_filter
-        load_txt_filter
-        @@list_txt
+        @@mtimes ||= {}
+        %i[rb txt].each { |mode| update_filter(mode) }
+        @@txt_filter
       end
       
       private
       
-      def load_txt_filter
-        mtime = File::Stat.new(Config::Path.filter(:txt)).mtime
-        if !class_variable_defined?(:@@list_txt_mtime) ||
-           @@list_txt_mtime != mtime
-          @@list_txt_mtime = mtime
-          @@list_txt = parse(Config::Path.filter(:txt))
-        end
+      def update_filter(mode)
+        fpath = Config::Path.filter(mode)
+        mtime = File::Stat.new(fpath).mtime
+        return if @@mtimes[fpath] == mtime
+        @@mtimes[fpath] = mtime
+        load_filter(mode, fpath)
       end
       
-      def load_rb_filter
-        mtime = File::Stat.new(Config::Path.filter(:rb)).mtime
-        if !class_variable_defined?(:@@filter_rb_mtime) ||
-           @@filter_rb_mtime != mtime
-          @@filter_rb_mtime = mtime
+      def load_filter(mode, fpath)
+        case mode
+        when :txt then @@txt_filter = parse(fpath)
+        when :rb
           ErrorHandler.catch(:rb) { load(Config::Path.filter(:rb)) }
           ErrorHandler.raise?(:rb) if UserFilter.private_method_defined?(:exec)
         end
       end
       
       def parse(path)
-        File.read(path, mode: 'r:BOM|UTF-8').scan(COMMAND_REG)
+        File.read(path, mode: 'r:BOM|UTF-8').scan(COMMAND_RE)
           .each_with_object([]) do |(cmd, expr), ary|
             next if ErrorHandler.raise?(:txt, cmd, expr)
             ary << SmileFilter.const_get(cmd.capitalize).new(expr.chomp)
