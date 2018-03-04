@@ -20,8 +20,8 @@ module SmileFilter
       
       def raise?(type, *args)
         case type
-        when :txt then check_txt(*args)
-        when :rb  then check_rb
+        when :txt then check_txt_filter(*args)
+        when :rb  then check_rb_filter
         end
         false
       rescue Exception => ex
@@ -31,14 +31,14 @@ module SmileFilter
       
       private
       
-      def check_list_txt(cmd, expr)
+      def check_txt_filter(cmd, expr)
         command = SmileFilter.const_get(cmd.capitalize).new(expr.chomp)
         Sandbox.run {
           DUMMY_COMMENT_DATA.chats.each { |chat| command.exec(chat) }
         }
       end
       
-      def check_rb
+      def check_rb_filter
         Sandbox.run {
           UserFilter.exec(DUMMY_COMMENT_DATA.chats)
         }
@@ -55,7 +55,7 @@ module SmileFilter
         case type
         when :txt then ["@#{args.join(' ')}"]
         when :rb
-          ex.backtrace.take_while { |s| s.include?(Config::Path::USER_FILTER) }
+          ex.backtrace.take_while { |s| s.include?(Config::Path.filter(:rb)) }
         end
       end
     end

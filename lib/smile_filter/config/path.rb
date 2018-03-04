@@ -5,8 +5,8 @@ module SmileFilter
     module Path
       ROOT               = File.expand_path('../../../../', __FILE__)
       DEFAULT_CONFIG     = "#{ROOT}/lib/smile_filter/config/default.yml"
-      DEFAULT_FILTER_RB  = "#{ROOT}/lib/smile_filter/config/default_filter.rb"
-      DEFAULT_FILTER_TXT = "#{ROOT}/lib/smile_filter/config/default_filter.txt"
+      DEFAULT_RB_FILTER  = "#{ROOT}/lib/smile_filter/config/default_filter.rb"
+      DEFAULT_TXT_FILTER = "#{ROOT}/lib/smile_filter/config/default_filter.txt"
       TEMPLATE_PAC_FILE  = "#{ROOT}/lib/smile_filter/config/template.pac"
       PAC_FILE           = "#{Path::ROOT}/public_html/proxy.pac"
       DOCUMENT_ROOT      = Initializer.document_root
@@ -16,7 +16,9 @@ module SmileFilter
       
       class << self
         def filter(mode)
-          sprintf('%s/%S', USER_DIRECTORY, filter_get(mode))
+          sprintf('%s/%s',
+                  USER_DIRECTORY,
+                  SmileFilter::Config.filter_get(mode))
         end
       end
     end

@@ -44,8 +44,8 @@ module SmileFilter
           Dir.mkdir(path) unless Dir.exist?(path)
           [
             ["#{path}/config.yml", Path::DEFAULT_CONFIG],
-            ["#{path}/filter.rb",  Path::DEFAULT_FILTER],
-            ["#{path}/list.txt",   Path::DEFAULT_LIST_FILE]
+            ["#{path}/filter.rb",  Path::DEFAULT_RB_FILTER],
+            ["#{path}/filter.txt",   Path::DEFAULT_TXT_FILTER]
           ].each do |fname, default|
             File.write(fname, File.read(default)) unless File.exist?(fname)
           end

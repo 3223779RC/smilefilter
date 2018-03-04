@@ -16,28 +16,28 @@ module SmileFilter
       COMMAND_REG = /^@(#{Regexp.union(COMMANDS)}) +(.*)$/
       
       def load_filters
-        load_filter_rb
-        load_list_txt
+        load_rb_filter
+        load_txt_filter
         @@list_txt
       end
       
       private
       
-      def load_list_txt
-        mtime = File::Stat.new(Config::Path::LIST_FILE).mtime
+      def load_txt_filter
+        mtime = File::Stat.new(Config::Path.filter(:txt)).mtime
         if !class_variable_defined?(:@@list_txt_mtime) ||
            @@list_txt_mtime != mtime
           @@list_txt_mtime = mtime
-          @@list_txt = parse(Config::Path::LIST_FILE)
+          @@list_txt = parse(Config::Path.filter(:txt))
         end
       end
       
-      def load_filter_rb
-        mtime = File::Stat.new(Config::Path::USER_FILTER).mtime
+      def load_rb_filter
+        mtime = File::Stat.new(Config::Path.filter(:rb)).mtime
         if !class_variable_defined?(:@@filter_rb_mtime) ||
            @@filter_rb_mtime != mtime
           @@filter_rb_mtime = mtime
-          ErrorHandler.catch(:rb) { load(Config::Path::USER_FILTER) }
+          ErrorHandler.catch(:rb) { load(Config::Path.filter(:rb)) }
           ErrorHandler.raise?(:rb) if UserFilter.private_method_defined?(:exec)
         end
       end
