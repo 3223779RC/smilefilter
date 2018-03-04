@@ -11,10 +11,14 @@ module SmileFilter
       PAC_FILE          = "#{Path::ROOT}/public_html/proxy.pac"
       DOCUMENT_ROOT     = Initializer.document_root
       USER_DIRECTORY    = Initializer.user_directory
-      LIST_FILE         = "#{USER_DIRECTORY}/list.txt"
-      USER_FILTER       = "#{USER_DIRECTORY}/filter.rb"
       USER_CONFIG       = "#{USER_DIRECTORY}/config.yml"
       LOG               = "#{USER_DIRECTORY}/log"
+      
+      class << self
+        def filter(mode)
+          sprintf('%s/%S', USER_DIRECTORY, filter_get(mode))
+        end
+      end
     end
   end
 end
