@@ -6,7 +6,8 @@
     $ git clone git://github.com/3223779RC/smilefilter.git ~/.smilefilter
 
 ## Requirement
-    [Ruby](https://www.ruby-lang.org) 2.0.0 or above
+
+[Ruby](https://www.ruby-lang.org) 2.0.0 or above
 
 ## Usage
     $ ~/.smilefilter/bin/smilefilter
