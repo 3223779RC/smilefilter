@@ -109,7 +109,7 @@ module SmileFilter
         end
         <<~EOT.chomp
           ### #{message} ###
-          #{'0'.rjust(INDEX_WIDTH)}. Cansel
+          #{'0'.rjust(INDEX_WIDTH)}. Cancel
           #{str}
             ?  
         EOT
