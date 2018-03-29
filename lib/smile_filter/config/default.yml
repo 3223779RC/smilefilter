@@ -3,6 +3,11 @@
 FilterFile:
   RB: filter.rb
   TXT: filter.txt
+  # インタラクション・モードでフィルターの編集をするテキスト・エディタを指定。
+	# テキスト・エディタにパスが通っていない場合はフルパスで指定する必要あり。
+  # 下の例はWindowsのメモ帳を指定した場合。
+	# 行頭の`#'を削除すれば有効化される。
+#  EDITOR: notepad
 
 # txtファイルのフィルターで投稿者コメントを編集の対象にするかどうか。
 EditOwnerComment: true
@@ -15,9 +20,9 @@ ProxyServer:
   BindAddress: 127.0.0.1
   Port: 8080
   # もし他のプロキシを使っているなら次の行の`#'を削除してアドレスを指定。
-  # ProxyURI: http://example.com:80/
+#  ProxyURI: http://example.com:80/
 
-# 保存するコメントのログの上限。負の値の時上限なし。
+# 保存するコメントのログの上限。負の値の時上限無し。
 MaxLogCount: 0
 
 # フィルターに対するセキュリティ・レベルを指定。
