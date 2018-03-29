@@ -7,7 +7,7 @@ FilterFile:
 	# テキスト・エディタにパスが通っていない場合はフルパスで指定する必要あり。
   # 下の例はWindowsのメモ帳を指定した場合。
 	# 行頭の`#'を削除すれば有効化される。
-#  EDITOR: notepad
+#  Editor: notepad
 
 # txtファイルのフィルターで投稿者コメントを編集の対象にするかどうか。
 EditOwnerComment: true
