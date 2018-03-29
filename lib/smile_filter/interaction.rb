@@ -29,14 +29,14 @@ module SmileFilter
       private
       
       def edit
-        if find_executable0(Config.filter_file[:EDITOR].to_s.tr('\\', '/'))
+        if find_executable0(Config.filter_file[:Editor].to_s.tr('\\', '/'))
           files = Dir.glob("*.rb\0*.txt", base: Config::Path::USER_DIRECTORY)
           print list(files, 'Select which filter you want to edit')
           open_editor(files)
         else
           puts <<~EOT
             ### No valid editor is selected ###
-            You need to edit config.yml and set EDITOR to an editor
+            You need to edit config.yml and set Editor to an editor
             which you want to open filter files with.
             
           EOT
@@ -47,7 +47,7 @@ module SmileFilter
         index = gets.to_i
         if (1..files.size).include?(index)
           fname = "#{Config::Path::USER_DIRECTORY}/#{files[index - 1]}"
-          spawn("#{Config.filter_file[:EDITOR]} #{fname}")
+          spawn("#{Config.filter_file[:Editor]} #{fname}")
           puts "#{files[index - 1]} was opened.\n\n"
         else
           puts "The editting was cancelled.\n\n"
