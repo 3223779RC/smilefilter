@@ -68,7 +68,7 @@ module SmileFilter
           ### Usage information ###
           e\t\tEdit filters. (Edit)
           h\t\tOutput this help. (Help)
-          q, \\C-c\tQuit SmileFilter. (Quit)
+          q, \\C-c\t\tQuit SmileFilter. (Quit)
           r\t\tSwitch *.rb-filters. (Rb)
           s\t\tDisplay current filters. (Status)
           t\t\tSwitch *.txt-filters. (Txt)
