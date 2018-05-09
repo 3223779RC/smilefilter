@@ -13,7 +13,7 @@ module SmileFilter
     DEVICES    = %i[3DS WiiU Switch]
     COMMANDS   = %i[
       ender patissier full anonymity is_button position color size font
-      iPhone docomo softbank device from_button _live invisible others
+      iPhone docomo softbank willcom device from_button _live invisible others
     ]
     HEX_COLOR  = /\A#\h{6}\z/
     DEVICE_REG = /\Adevice:(?<suffix>\w+)\z/

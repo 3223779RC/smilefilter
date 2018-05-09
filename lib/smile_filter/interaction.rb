@@ -3,6 +3,7 @@
 require 'io/console'
 require 'mkmf'
 
+require 'smile_filter/check_update'
 
 module SmileFilter
   module Interaction
@@ -19,6 +20,7 @@ module SmileFilter
             when 'r'         then switch_filter(:rb)
             when 's'         then current_status
             when 't'         then switch_filter(:txt)
+            when 'u'         then check_update
             when 'v'         then display_version
             # when 'd'         then require 'pry'; pry
             end
@@ -31,13 +33,13 @@ module SmileFilter
       def edit
         if find_executable0(Config.filter_file[:Editor].to_s.tr('\\', '/'))
           files = Dir.glob("*.rb\0*.txt", base: Config::Path::USER_DIRECTORY)
-          print list(files, 'Select which filter you want to edit')
+          print list(files, '編集したいフィルターを選択してください')
           open_editor(files)
         else
           puts <<~EOT
-            ### No valid editor is selected ###
-            You need to edit config.yml and set Editor to an editor
-            which you want to open filter files with.
+            ### 有効なエディタが設定されていません ###
+            config.yml を編集し、フィルターの編集に使用したいエディタを
+            Editor に設定してください。
             
           EOT
         end
@@ -48,15 +50,15 @@ module SmileFilter
         if (1..files.size).include?(index)
           fname = "#{Config::Path::USER_DIRECTORY}/#{files[index - 1]}"
           spawn("#{Config.filter_file[:Editor]} #{fname}")
-          puts "#{files[index - 1]} was opened.\n\n"
+          puts "#{files[index - 1]} が開かれました。\n\n"
         else
-          puts "The editting was cancelled.\n\n"
+          puts "編集はキャンセルされました。\n\n"
         end
       end
       
       def current_status
         printf(<<~EOT, Config.filter_get(:txt), Config.filter_get(:rb))
-          ### Information about the current filters ###
+          ### 現在適用中のフィルター ###
           txt:\t%s
           rb:\t%s
           
@@ -65,21 +67,23 @@ module SmileFilter
       
       def display_help
         puts <<~EOT
-          ### Usage information ###
-          e\t\tEdit filters. (Edit)
-          h\t\tOutput this help. (Help)
-          q, \\C-c\tQuit SmileFilter. (Quit)
-          r\t\tSwitch *.rb-filters. (Rb)
-          s\t\tDisplay current filters. (Status)
-          t\t\tSwitch *.txt-filters. (Txt)
-          v\t\tOutput version information. (Version)
+          ### ヘルプ ###
+          e\t\tエディタを開きフィルターを編集します。(Edit)
+          h\t\tこのヘルプを表示します。(Help)
+          q, \\C-c\t\tSmileFilter を終了します。(Quit)
+          r\t\trbファイルのフィルターを切り替えます。(Rb)
+          s\t\t現在使用中のフィルターを表示します。(Status)
+          t\t\ttxtファイルのフィルターを切り替えます。(Txt)
+          u\t\tSmileFilterが最新のバージョンかどうか確認します。(Update)
+          \t\t使用するには config.yml でこの機能を有効にしてください。
+          v\t\tバージョン情報を表示します。(Version)
           
         EOT
       end
       
       def display_version
         puts <<~EOT
-          ### Version information ###
+          ### バージョン情報 ###
           SmileFilter #{VERSION}
           Ruby #{RUBY_VERSION}
           
@@ -88,14 +92,14 @@ module SmileFilter
       
       def switch_filter(mode)
         files = Dir.glob("*.#{mode}", base: Config::Path::USER_DIRECTORY)
-        print list(files, "Select which *.#{mode}-filter you want")
+        print list(files, "使用する #{mode} ファイルのフィルターを選択してください")
         index = gets.to_i
         if (1..files.size).include?(index)
           fname = files[index - 1]
           Config.filter_set(mode, fname)
-          puts "#{fname} was selected.\n\n"
+          puts "#{fname} が選択されました。\n\n"
         else
-          puts "The switching was cancelled.\n\n"
+          puts "フィルターの切り替えはキャンセルされました。\n\n"
         end
       end
       
@@ -109,10 +113,14 @@ module SmileFilter
         end
         <<~EOT.chomp
           ### #{message} ###
-          #{'0'.rjust(INDEX_WIDTH)}. Cancel
+          #{'0'.rjust(INDEX_WIDTH)}. キャンセル
           #{str}
             ?  
         EOT
+      end
+      
+      def check_update
+        CheckUpdate.run if Config.check_update
       end
     end
   end

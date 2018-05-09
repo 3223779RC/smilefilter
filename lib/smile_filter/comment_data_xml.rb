@@ -35,7 +35,7 @@ module SmileFilter
       element.attributes.each_with_object(h) do |(name, value), hash|
         value = value.to_i if name != 'user_id' &&
                               name != 'thread' &&
-                              value.match?(/\A\d+\z/)
+                              value.match?(/\A-?\d+\z/)
         hash[name.to_sym] = value
       end
     end

@@ -33,6 +33,10 @@ module SmileFilter
         @config[:CommentServer]
       end
       
+      def check_update
+        @config[:CheckUpdate]
+      end
+      
       def filter_file
         @config[:FilterFile]
       end
@@ -45,6 +49,20 @@ module SmileFilter
         return if filter_get(mode) == fname
         filter_file[mode.upcase] = fname
         save_filter(mode)
+      end
+      
+      def platform
+        @config[:platform] ||=
+          case RUBY_PLATFORM
+          when /mswin|mingw|bccwin|wince|emc/ then :windows
+          when /cygwin/        then :cygwin
+          when /darwin|mac os/ then :macosx
+          when /linux/         then :linux
+          when /java/          then :java
+          when /solaris|bsd/   then :unix
+          else
+            :unknown
+          end
       end
       
       private

@@ -12,6 +12,7 @@ require 'smile_filter/config/initializer'
 require 'smile_filter/config/path'
 require 'smile_filter/handler'
 require 'smile_filter/interaction'
+require 'smile_filter/check_update'
 
 module SmileFilter
   PAC_MIME_TYPE = {'pac' => 'application/x-ns-proxy-autoconfig'}
@@ -19,8 +20,9 @@ module SmileFilter
   
   class << self
     def start
-      puts "Hello, SmileFilter #{VERSION}!", Time.now
+      puts "Hello, SmileFilter #{VERSION}!\n#{Time.now}\n\n"
       init_settings
+      CheckUpdate.run if Config.check_update
       Interaction.run
       start_server
     end
