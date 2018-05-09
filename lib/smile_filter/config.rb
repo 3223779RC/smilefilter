@@ -51,6 +51,20 @@ module SmileFilter
         save_filter(mode)
       end
       
+      def platform
+        @config[:platform] ||=
+          case RUBY_PLATFORM
+          when /mswin|mingw|bccwin|wince|emc/ then :windows
+          when /cygwin/        then :cygwin
+          when /darwin|mac os/ then :macosx
+          when /linux/         then :linux
+          when /java/          then :java
+          when /solaris|bsd/   then :unix
+          else
+            :unknown
+          end
+      end
+      
       private
       
       def save_filter(mode)

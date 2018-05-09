@@ -62,11 +62,12 @@ module SmileFilter
             
             ?  
         EOT
-        if gets.to_i == 1
-          launch_browser(dl_uri)
+        if gets.to_i != 1
+          puts "ブラウザを起動しませんでした。\n\n"
+        elsif launch_browser(dl_uri)
           puts "ブラウザを起動しました。\n\n"
         else
-          puts "ブラウザを起動しませんでした。\n\n"
+          puts "ブラウザの起動に失敗しました。\n\n"
         end
       end
       
@@ -75,7 +76,18 @@ module SmileFilter
       end
       
       def launch_browser(uri)
-        system("start #{uri}")
+        case Config.platform
+        when :windows      then system("start /B #{uri}")
+        when :cygwin       then system("cygstart #{uri}")
+        when :macosx       then system('open', uri)
+        when :linux, :unix then system("xdg-open #{uri}")
+        when :java
+          require 'java'
+          import 'java.awt.Desktop'
+          import 'java.net.URI'
+          Desktop.getDesktop.browse java.net.URI.new(uri)
+        when :unknown      then nil
+        end
       end
     end
   end
