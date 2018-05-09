@@ -47,7 +47,7 @@ module SmileFilter
       def message(ex, type, *args)
         fname = Config.filter_get(type)
         bt = backtrace(ex, type, *args)
-        msg = "### %s raised an error ###\n%s: %s\n%s\n\n"
+        msg = "### %s でエラーが発生しました ###\n%s: %s\n%s\n\n"
         sprintf(msg, fname, ex.class, ex.message, bt.join("\n"))
       end
       
