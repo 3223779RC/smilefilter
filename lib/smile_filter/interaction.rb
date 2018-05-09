@@ -3,6 +3,7 @@
 require 'io/console'
 require 'mkmf'
 
+require 'smile_filter/check_update'
 
 module SmileFilter
   module Interaction
@@ -19,6 +20,7 @@ module SmileFilter
             when 'r'         then switch_filter(:rb)
             when 's'         then current_status
             when 't'         then switch_filter(:txt)
+            when 'u'         then check_update
             when 'v'         then display_version
             # when 'd'         then require 'pry'; pry
             end
@@ -66,13 +68,15 @@ module SmileFilter
       def display_help
         puts <<~EOT
           ### ヘルプ ###
-          e\t\tエディタを開きフィルターを編集します。 (Edit)
-          h\t\tこのヘルプを表示します。 (Help)
-          q, \\C-c\t\tSmileFilter を終了します。 (Quit)
-          r\t\trbファイルのフィルターを切り替えます。 (Rb)
-          s\t\t現在使用中のフィルターを表示します。 (Status)
-          t\t\ttxtファイルのフィルターを切り替えます。 (Txt)
-          v\t\tバージョン情報を表示します。 (Version)
+          e\t\tエディタを開きフィルターを編集します。(Edit)
+          h\t\tこのヘルプを表示します。(Help)
+          q, \\C-c\t\tSmileFilter を終了します。(Quit)
+          r\t\trbファイルのフィルターを切り替えます。(Rb)
+          s\t\t現在使用中のフィルターを表示します。(Status)
+          t\t\ttxtファイルのフィルターを切り替えます。(Txt)
+          u\t\tSmileFilterが最新のバージョンかどうか確認します。(Update)
+          \t\t使用するには config.yml でこの機能を有効にしてください。
+          v\t\tバージョン情報を表示します。(Version)
           
         EOT
       end
@@ -113,6 +117,10 @@ module SmileFilter
           #{str}
             ?  
         EOT
+      end
+      
+      def check_update
+        CheckUpdate.run if Config.check_update
       end
     end
   end

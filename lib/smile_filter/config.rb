@@ -33,6 +33,10 @@ module SmileFilter
         @config[:CommentServer]
       end
       
+      def check_update
+        @config[:CheckUpdate]
+      end
+      
       def filter_file
         @config[:FilterFile]
       end
