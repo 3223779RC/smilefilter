@@ -17,7 +17,7 @@ module SmileFilter
     ]
     HEX_COLOR  = /\A#\h{6}\z/
     DEVICE_REG = /\Adevice:(?<suffix>\w+)\z/
-    NON_PC_DEVICE = %i[@device @iPhone @docomo @softbank]
+    NON_PC_DEVICE = %i[@device @iPhone @docomo @softbank @willcom]
 #    NICOSCRIPTS = %i[migi hidari hidden @int local @button]
 #    SECOND_REG = /\A@(\d+)\z/
     BOOLEAN_COMMANDS = COMMANDS - %i[position color size font device others]
