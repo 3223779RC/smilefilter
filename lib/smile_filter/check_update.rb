@@ -7,15 +7,21 @@ module SmileFilter
     MAX_TRIALS = 3
     WAIT_TIMES = MAX_TRIALS.times.map { |i| 1 << i }
     INTERVAL   = 10
+    ERRORS     = [
+                   SocketError, OpenURI::HTTPError, Errno::EHOSTUNREACH,
+                   Errno::ENETUNREACH, Errno::ECONNREFUSED, Timeout::Error,
+                   Errno::ETIMEDOUT
+                 ]
     
     @@last_check = Time.new(0)
     
     class << self
       def run
         return(reject) if Time.now - @@last_check < INTERVAL
+        puts "### バージョン情報を取得しています ###"
         WAIT_TIMES.each do |wtime|
-          @@last_check = Time.now
           return if get_newest_version(wtime)
+          sleep(wtime)
         end
         failed_to_open
       end
@@ -23,12 +29,11 @@ module SmileFilter
       private
       
       def get_newest_version(wtime)
+        @@last_check = Time.now
         newest_version = open(Config.check_update)
         check_version(newest_version.read)
         true
-      rescue SocketError, OpenURI::HTTPError => ex
-        sleep(wtime)
-        false
+      rescue *ERRORS => ex
       end
       
       def reject
