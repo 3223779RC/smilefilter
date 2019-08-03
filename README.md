@@ -1,6 +1,6 @@
 # SmileFilter
 
-使用法・使用例は[こちら](http://www.sfilter.shop)に詳述してあります
+使用法・使用例は[こちら](http://sfilter.s1001.xrea.com/www.sfilter.shop/)に詳述してあります
 
 ## Installation
     $ git clone git://github.com/3223779RC/smilefilter.git ~/.smilefilter
